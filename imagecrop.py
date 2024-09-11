@@ -1,7 +1,7 @@
 import http.server ,mimetypes,os,uuid,json,requests
+import numpy as np
 from PIL import Image
 from io import BytesIO
-import numpy as np
 from  http.server import ThreadingHTTPServer
 
 # Directory to save processed images
