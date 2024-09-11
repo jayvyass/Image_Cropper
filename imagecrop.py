@@ -7,6 +7,7 @@ from io import BytesIO
 import os
 import mimetypes
 import numpy as np
+import uuid
 
 # Directory to save processed images
 STATIC_DIR = 'static'
@@ -14,7 +15,7 @@ if not os.path.exists(STATIC_DIR):
     os.makedirs(STATIC_DIR)
 
 
-def crop_white_space(image_url: str, output_path: str, white_tolerance: int = 10):
+def crop_white_space(image_url: str, output_filename: str, white_tolerance: int = 10):
     # Download the image
     response = requests.get(image_url)
     img = Image.open(BytesIO(response.content)).convert("RGBA")
@@ -44,7 +45,7 @@ def crop_white_space(image_url: str, output_path: str, white_tolerance: int = 10
         img_cropped = img_no_white_bg
 
     # Save the processed image
-    img_cropped.save(output_path, format='PNG')
+    img_cropped.save(output_filename, format='PNG')
 
 
 class RequestHandler(http.server.SimpleHTTPRequestHandler):
@@ -71,15 +72,18 @@ class RequestHandler(http.server.SimpleHTTPRequestHandler):
                 self.wfile.write(json.dumps(response).encode())
                 return
 
+            # Generate a unique filename
+            unique_filename = f'processed_image_{uuid.uuid4().hex}.png'
+            output_filename = os.path.join(STATIC_DIR, unique_filename)
+
             # Process the image
-            output_filename = os.path.join(STATIC_DIR, 'processed_image.png')
             crop_white_space(image_url, output_filename)
 
             # Return the URL of the processed image
             self.send_response(200)
             self.send_header('Content-type', 'application/json')
             self.end_headers()
-            response = {'url': f'/static/processed_image.png'}
+            response = {'url': f'/static/{unique_filename}'}
             self.wfile.write(json.dumps(response).encode())
         else:
             self.send_error(404, 'Not Found')
