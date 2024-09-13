@@ -16,7 +16,7 @@ STATIC_DIR = 'static'
 if not os.path.exists(STATIC_DIR):
     os.makedirs(STATIC_DIR)
 
-# Time in seconds after which files will be deleted (5 minutes)
+# Time in seconds after which files  be deleted (5 minutes)
 DELETE_AFTER = 180
 
 def crop_white_space(image_url: str, output_filename: str, white_tolerance: int = 10):
