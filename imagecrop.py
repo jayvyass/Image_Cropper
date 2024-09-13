@@ -19,7 +19,6 @@ if not os.path.exists(STATIC_DIR):
 # Time in seconds after which files will be deleted (5 minutes)
 DELETE_AFTER = 180
 
-
 def crop_white_space(image_url: str, output_filename: str, white_tolerance: int = 10):
     # Download the image
     response = requests.get(image_url)
